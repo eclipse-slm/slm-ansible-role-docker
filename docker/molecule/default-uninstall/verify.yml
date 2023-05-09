@@ -1,0 +1,45 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify (ssh)
+  hosts: ssh
+  gather_facts: false
+  tasks:
+    - name: Do hello-world
+      ansible.builtin.command: docker run hello-world
+      become: yes
+      register: result
+      failed_when: false
+
+    - assert:
+        that:
+          - result.rc == 2
+
+- name: Verify (winrm)
+  hosts: winrm
+  connection: psrp
+  vars:
+    ansible_port: 5985
+    ansible_winrm_transport: basic
+    ansible_winrm_read_timeout_sec: 120
+    ansible_winrm_operation_timeout_sec: 90
+    ansible_become_method: runas
+    ansible_become_user: ansible
+    ansible_winrm_server_cert_validation: ignore
+    ansible_psrp_connection_timeout: 120
+    ansible_psrp_operation_timeout: 90
+    ansible_psrp_read_timeout: 120
+    ansible_psrp_reconnection_retries: 10
+  gather_facts: false
+  become: yes
+  tasks:
+    - name: Do hello-world
+      ansible.windows.win_shell: docker run hello-world
+      become: yes
+      register: result
+      failed_when: false
+
+    - assert:
+        that:
+          - result.rc == 1
+

@@ -1,0 +1,30 @@
+---
+- name: Converge - Uninstall (ssh)
+  hosts: ssh
+  gather_facts: yes
+  become: yes
+  vars:
+    state: absent
+  tasks:
+    - name: "Include docker - state = absent (no-Windows)"
+      ansible.builtin.include_role:
+        name: "docker"
+
+- name: Converge - Uninstall (winrm/win-ssh)
+  hosts: winrm:win-ssh
+  gather_facts: no
+  become: yes
+  vars:
+    state: absent
+  tasks:
+    - name: Gathering Facts
+      ansible.windows.setup:
+        gather_subset:
+          - "!all"
+      async: 30
+      poll: 5
+      retries: 3
+
+    - name: "Include docker - state = present"
+      ansible.builtin.include_role:
+        name: "docker"

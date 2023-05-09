@@ -1,0 +1,37 @@
+---
+- name: Add firewall rule for port 2375
+  when: ansible_distribution == 'CentOS'
+  ansible.posix.firewalld:
+    port: 2375/tcp
+    permanent: true
+    state: enabled
+  register: firewalld_output
+
+- name: Reload Firewalld
+  when:
+    - ansible_distribution == 'CentOS'
+    - firewalld_output.changed
+  ansible.builtin.systemd:
+    name: firewalld
+    state: reloaded
+
+
+- name: Make sure directories of config files are created
+  ansible.builtin.file:
+    path: "{{ item.dest_dir }}"
+    state: directory
+  loop: "{{ expose_tcp_port.files }}"
+
+- name: Copy config files to remote
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest_dir }}{{ item.dest_file }}"
+  loop: "{{ expose_tcp_port.files }}"
+  register: copy_action_results
+
+- name: Reload + Restart docker daemon
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: docker
+  when: copy_action_results.changed

@@ -1,0 +1,11 @@
+- name: Apt remove
+  ansible.builtin.shell: apt-get remove -y docker
+
+#- name: Remove docker.list
+#  ansible.builtin.shell: rm /etc/apt/sources.list.d/docker.list
+
+#- name: Remove docker lib folder
+#  ansible.builtin.shell: rm -rf /var/lib/docker
+#
+#- name: Remove containerd folder
+#  ansible.builtin.shell: rm -rf /var/lib/containerd

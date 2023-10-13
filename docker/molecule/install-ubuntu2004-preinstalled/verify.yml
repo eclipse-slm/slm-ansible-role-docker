@@ -1,0 +1,18 @@
+---
+- name: Verify - Install-Ubuntu2004 Preinstalled
+  hosts: ssh
+  gather_facts: yes
+  become: yes
+  vars:
+    service_id: b243ac12-5c59-4f2f-8ea0-26f967526b19
+    docker_compose_file: "{{ lookup('file', './verify/docker-compose.yml') }}"
+  tasks:
+    - name: "Create Docker Compose Stack (Linux)"
+      community.docker.docker_compose:
+        state: "present"
+        project_name: "{{ service_id }}"
+        definition: "{{ docker_compose_file }}"
+      register: docker_compose
+      retries: 5
+      delay: 5
+      until: docker_compose.failed == false

@@ -5,7 +5,7 @@
 
 - name: Include Ubuntu Install Tasks
   ansible.builtin.include_tasks: dist-specific/ubuntu_install.yml
-  when: ansible_distribution == 'Ubuntu'
+  when: (ansible_distribution == 'Ubuntu') or ansible_distribution == 'Debian'
 
 - name: Include Raspbian Install Tasks
   ansible.builtin.include_tasks: dist-specific/raspbian_install.yml
@@ -22,3 +22,10 @@
   when:
     - expose_docker_tcp_port | default(expose_docker_tcp_port_default)
     - ansible_os_family != "Windows"
+
+- name: Unsupported Linux distribution
+  fail:
+    msg: "Unsupported Linux distribution: {{ ansible_distribution }}"
+  when:
+    - ansible_os_family != "Windows"
+    - (ansible_distribution != 'CentOS') or (ansible_distribution != 'Ubuntu') or ((ansible_distribution == 'Debian') and (ansible_lsb.id != 'Raspbian'))

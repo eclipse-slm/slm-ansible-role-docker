@@ -5,7 +5,7 @@
 
 - name: Include Ubuntu Install Tasks
   ansible.builtin.include_tasks: dist-specific/ubuntu_install.yml
-  when: (ansible_distribution == 'Ubuntu') or ansible_distribution == 'Debian'
+  when: (ansible_distribution == 'Ubuntu')
 
 - name: Include Raspbian Install Tasks
   ansible.builtin.include_tasks: dist-specific/raspbian_install.yml
@@ -26,6 +26,7 @@
 - name: Unsupported Linux distribution
   fail:
     msg: "Unsupported Linux distribution: {{ ansible_distribution }}"
-  when:
-    - ansible_os_family != "Windows"
-    - (ansible_distribution != 'CentOS') or (ansible_distribution != 'Ubuntu') or ((ansible_distribution == 'Debian') and (ansible_lsb.id != 'Raspbian'))
+  when: (ansible_os_family != "Windows") or
+        (ansible_distribution != 'CentOS') or 
+        (ansible_distribution != 'Ubuntu') or 
+        ((ansible_distribution == 'Debian') and (ansible_lsb.id != 'Raspbian'))

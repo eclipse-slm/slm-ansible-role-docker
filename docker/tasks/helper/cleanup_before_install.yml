@@ -1,5 +1,5 @@
 - name: Pip freeze docker-compose
-  ansible.builtin.shell: pip freeze | grep docker-compose
+  ansible.builtin.shell: pip3 freeze | grep docker-compose
   changed_when: false
   failed_when: false
   register: pip_freeze_dc

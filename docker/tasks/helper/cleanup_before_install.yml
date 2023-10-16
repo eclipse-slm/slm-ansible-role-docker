@@ -1,7 +1,14 @@
-- name: Remove docker compose binary
+- name: Pip freeze docker-compose
+  ansible.builtin.shell: pip freeze | grep docker-compose
+  changed_when: false
+  failed_when: false
+  register: pip_freeze_dc
+
+- name: Remove docker compose binary (when not pip package)
   ansible.builtin.file:
     path: /usr/local/bin/docker-compose
     state: absent
+  when: pip_freeze_dc.stdout_lines | length == 0
   register: remove_docker_compose
 
 - name: Remove old conflicting packages

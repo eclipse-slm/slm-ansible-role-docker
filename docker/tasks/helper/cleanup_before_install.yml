@@ -1,0 +1,17 @@
+- name: Remove docker compose binary
+  ansible.builtin.file:
+    path: /usr/local/bin/docker-compose
+    state: absent
+  register: remove_docker_compose
+
+- name: Remove old conflicting packages
+  ansible.builtin.apt:
+    pkg:
+      - docker.io
+      - docker-compose
+      - docker-doc
+      - podman-docker
+      - containerd
+      - runc
+    state: absent
+  when: (ansible_distribution == 'Ubuntu')

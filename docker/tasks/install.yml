@@ -1,4 +1,7 @@
 ---
+- name: Cleanup before install
+  ansible.builtin.include_tasks: helper/cleanup_before_install.yml
+
 - name: Include CentOS Install Tasks
   ansible.builtin.include_tasks: dist-specific/centos_install.yml
   when: ansible_distribution == 'CentOS'

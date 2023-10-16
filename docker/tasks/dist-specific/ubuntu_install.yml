@@ -42,6 +42,7 @@
     name:
       - docker
       - docker-compose
+    state: latest
   register: pip_result
   until: not pip_result.failed
   retries: 20

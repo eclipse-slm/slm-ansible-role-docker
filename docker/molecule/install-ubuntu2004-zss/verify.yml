@@ -5,7 +5,7 @@
   become: yes
   vars:
     service_id: b243ac12-5c59-4f2f-8ea0-26f967526b19
-    docker_compose_file: "{{ lookup('file', './verify/docker-compose.yml') }}"
+    docker_compose_file: "{{ lookup('file', './verify/docker-compose.yml') | from_yaml }}"
   tasks:
     - name: "Create Docker Compose Stack (Linux)"
       community.docker.docker_compose:

@@ -1,0 +1,8 @@
+---
+- name: Prepare - Install-Ubuntu2004 Preinstalled
+  hosts: ssh
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Prepare zss
+      ansible.builtin.include_tasks: prepare/prepare_zss.yml

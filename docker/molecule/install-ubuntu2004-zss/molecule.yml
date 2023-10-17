@@ -2,9 +2,10 @@
 dependency:
   name: galaxy
 driver:
-  name: default
+#  name: default
+  name: delegated
 platforms:
-  - name: ubuntu2004
+  - name: ubuntu2004-zss
     template_name: ubuntu-20-04
     groups: ['ssh']
 provisioner:
@@ -14,6 +15,6 @@ provisioner:
     prepare: prepare.yml
     destroy: ../default/destroy.yml
     converge: ../default-install/converge.yml
-    verify: ../default-install/verify.yml
+    verify: verify.yml
 verifier:
   name: ansible

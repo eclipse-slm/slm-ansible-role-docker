@@ -1,0 +1,44 @@
+- name: Apt install ca-certificates,...
+  ansible.builtin.shell: sudo apt update && sudo apt-get install -y ca-certificates curl gnupg python3-pip
+
+- name: Run history cmds 1
+  ansible.builtin.shell: |
+    sudo apt install -y docker.io ; \
+    sudo systemctl enable --now docker ; \
+    sudo apt update ; \
+    sudo apt upgrade -y ; \
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose ; \
+    sudo chmod +x /usr/local/bin/docker-compose ; \
+    sudo apt install -y  docker-compose ; \
+  failed_when: false
+
+
+- name: Run history cmds 2
+  ansible.builtin.shell: |
+    for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove -y $pkg; done ; \
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose ; \
+    sudo chmod +x /usr/local/bin/docker-compose
+  failed_when: false
+
+
+# Erzeugt pip Fehler oder interaktion mit pip package "docker-compose" (recovery durch reinstall von python3 und python3-pip):
+#- name: Run pip uninstall
+#  ansible.builtin.shell: sudo pip uninstall -y docker docker-py docker-compose
+
+- name: Run pip uninstall Variante ohne docker-compose
+  ansible.builtin.shell: sudo pip uninstall -y docker docker-py docker-compose
+
+#- name: sudo pip install docker-compose
+#  ansible.builtin.shell: sudo pip install docker-compose
+
+- name: sudo pip install docker
+  ansible.builtin.shell: sudo pip install docker
+
+#- name: sudo pip install docker-compose
+#  ansible.builtin.shell: sudo pip install docker-compose
+
+- name: pip uninstall -y dockerpty
+  ansible.builtin.shell: pip uninstall -y dockerpty
+
+
+

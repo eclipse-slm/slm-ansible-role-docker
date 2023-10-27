@@ -1,6 +1,19 @@
 ---
+- name: Test Connectivity
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Test Connection
+      ansible.builtin.include_role:
+        name: molecule_openstack
+        tasks_from: test_ssh_connection.yml
+
+# TODO: https://unix.stackexchange.com/questions/487742/system-is-booting-up-unprivileged-users-are-not-permitted-to-log-in-yet
+# TASK [Test connection] *********************************************************
+  #fatal: [localhost -> 10.17.164.52]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: Warning: Permanently added '10.17.164.52' (ED25519) to the list of known hosts.\r\n\"System is booting up. Unprivileged users are not permitted to log in yet. Please come back later. For technical details, see pam_nologin(8).\"\nConnection closed by 10.17.164.52 port 22", "unreachable": true}
+
 - name: Converge - Install (ssh)
-  hosts: ssh
+  hosts: all
   gather_facts: yes
   become: yes
   tasks:

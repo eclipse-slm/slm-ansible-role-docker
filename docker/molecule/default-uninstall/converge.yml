@@ -1,4 +1,13 @@
 ---
+- name: Test Connectivity
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Test Connection
+      ansible.builtin.include_role:
+        name: molecule_openstack
+        tasks_from: test_ssh_connection.yml
+
 - name: Converge - Uninstall (ssh)
   hosts: ssh
   gather_facts: yes

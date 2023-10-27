@@ -34,3 +34,12 @@
     name:
       - docker
       - docker-compose
+  when: ansible_distribution_major_version == "8"
+
+- name: Install 'docker', 'docker-compose' pip package (CentOS 9)
+  ansible.builtin.pip:
+    name:
+      - docker
+      - docker-compose
+  ignore_errors: true
+  when: ansible_distribution_major_version == "9"

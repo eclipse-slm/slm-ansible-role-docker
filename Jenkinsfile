@@ -61,10 +61,19 @@ for (kv in mapToList(scenarios)) {
                 sh "cd ./${role} && molecule create -s install-${platform}-os"
             }
 
-            for(int i = 0; i < scenarioList.size(); i++) {
-                def scenario = scenarioList[i]
-                stage("${platform} - ${scenario}") {
-                    sh "cd ./${role} && molecule -vv test -s ${scenario} -p ${platform} --destroy never"
+            try {
+                for(int i = 0; i < scenarioList.size(); i++) {
+                    def scenario = scenarioList[i]
+
+
+                        stage("${platform} - ${scenario}") {
+                            sh "cd ./${role} && molecule -vv test -s ${scenario} -p ${platform} --destroy never"
+                        }
+
+                }
+            } finally {
+                stage("Destroy") {
+                    sh "cd ./${role} && molecule destroy -s install-linux-os"
                 }
             }
         }
@@ -79,20 +88,12 @@ node {
             usernameVariable: 'OS_APPLICATION_CREDENTIAL_ID',
             passwordVariable: 'OS_APPLICATION_CREDENTIAL_SECRET'
     )]) {
-
-        try {
-            stage("Pull molecule image") {
-                sh "ansible-galaxy install -r requirements.yml"
-                sh "docker pull ${MOLECULE_DOCKER_IMAGE}"
-            }
-
-            parallel(parallel_stages)
-        } finally {
-            stage("Destroy") {
-                sh "cd ./${role} && molecule destroy -s install-linux-os"
-//                sh "cd ./${role} && molecule destroy -s install-win10"
-            }
+        stage("Pull molecule image") {
+            sh "ansible-galaxy install -r requirements.yml"
+            sh "docker pull ${MOLECULE_DOCKER_IMAGE}"
         }
+
+        parallel(parallel_stages)
     }
 }
 

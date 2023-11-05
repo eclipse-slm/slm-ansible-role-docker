@@ -82,6 +82,9 @@ node {
 
         try {
             stage("Pull molecule image") {
+                sh "whoami"
+                sh "groups"
+                sh "docker ps"
                 sh "docker pull ${MOLECULE_DOCKER_IMAGE}"
             }
 

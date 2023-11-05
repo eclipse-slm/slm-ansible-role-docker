@@ -82,14 +82,14 @@ node {
 
         try {
             stage("Pull molecule image") {
-                sh "docker pull fabos4ai/molecule:4.0.1"
+                sh "docker pull ${MOLECULE_DOCKER_IMAGE}"
             }
 
             parallel(parallel_stages)
         } finally {
             stage("Destroy") {
-                sh "cd ./${role} && molecule destroy -s install-linux"
-                sh "cd ./${role} && molecule destroy -s install-win10"
+                sh "cd ./${role} && molecule destroy -s install-linux-os"
+//                sh "cd ./${role} && molecule destroy -s install-win10"
             }
         }
     }

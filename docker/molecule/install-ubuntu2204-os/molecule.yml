@@ -4,7 +4,7 @@ dependency:
 driver:
   name: delegated
 platforms:
-  - name: ubuntu-22-04
+  - name: ubuntu2004
     image_name: ansible-dev-ubuntu-22-04
     groups: ['ssh']
 provisioner:

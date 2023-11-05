@@ -75,9 +75,9 @@ node {
     checkout scm
 
     withCredentials([usernamePassword(
-            credentialsId: 'jenkins_infra_account',
-            usernameVariable: 'VSPHERE_USER',
-            passwordVariable: 'VSPHERE_PASSWORD'
+            credentialsId: 'openstack-credentials',
+            usernameVariable: 'OS_APPLICATION_CREDENTIAL_ID',
+            passwordVariable: 'OS_APPLICATION_CREDENTIAL_SECRET'
     )]) {
 
         try {

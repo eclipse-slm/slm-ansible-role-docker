@@ -58,7 +58,7 @@ for (kv in mapToList(scenarios)) {
             }
 
             stage("${platform} - Create") {
-                sh "cd ./${role} && molecule create -s install-${platform}-os"
+                sh "cd ./${role} && molecule -vvv create -s install-${platform}-os"
             }
 
             try {
@@ -67,7 +67,7 @@ for (kv in mapToList(scenarios)) {
 
 
                         stage("${platform} - ${scenario}") {
-                            sh "cd ./${role} && molecule -vv test -s ${scenario} -p ${platform} --destroy never"
+                            sh "cd ./${role} && molecule -vvv test -s ${scenario} -p ${platform} --destroy never"
                         }
 
                 }

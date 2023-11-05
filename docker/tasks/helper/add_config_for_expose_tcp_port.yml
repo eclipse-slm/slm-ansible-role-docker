@@ -1,19 +1,38 @@
 ---
-- name: Add firewall rule for port 2375
+- name: Check firewalld status (CentOS)
   when: ansible_distribution == 'CentOS'
-  ansible.posix.firewalld:
-    port: 2375/tcp
-    permanent: true
-    state: enabled
-  register: firewalld_output
+  ansible.builtin.service_facts:
 
-- name: Reload Firewalld
+- name: Add firewall rule (CentOS)
   when:
     - ansible_distribution == 'CentOS'
-    - firewalld_output.changed
-  ansible.builtin.systemd:
-    name: firewalld
-    state: reloaded
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == "running"
+  block:
+    - name: Install python-firewall (CentOS7/9)
+      when: ansible_distribution_major_version != "8"
+      ansible.builtin.yum:
+        name: python-firewall
+
+    - name: Install firewall python package (CentOS8)
+      when: ansible_distribution_major_version == "8"
+      ansible.builtin.yum:
+        name: python3-firewall
+
+    - name: Add firewall rule for port 2375
+      ansible.posix.firewalld:
+        zone: public
+        port: 2375/tcp
+        permanent: true
+        state: enabled
+      register: firewalld_output
+
+    - name: Reload Firewalld
+      when:
+        - firewalld_output.changed
+      ansible.builtin.systemd:
+        name: firewalld
+        state: reloaded
 
 
 - name: Make sure directories of config files are created

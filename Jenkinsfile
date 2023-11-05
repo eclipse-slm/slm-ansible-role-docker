@@ -58,7 +58,7 @@ for (kv in mapToList(scenarios)) {
             }
 
             stage("${platform} - Create") {
-                sh "cd ./${role} && molecule create -s install-${platform}"
+                sh "cd ./${role} && molecule create -s install-${platform}-os"
             }
 
             for(int i = 0; i < scenarioList.size(); i++) {
@@ -82,9 +82,6 @@ node {
 
         try {
             stage("Pull molecule image") {
-                sh "whoami"
-                sh "groups"
-                sh "docker ps"
                 sh "docker pull ${MOLECULE_DOCKER_IMAGE}"
             }
 

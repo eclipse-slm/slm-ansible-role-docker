@@ -88,6 +88,7 @@ node {
             parallel(parallel_stages)
         } finally {
             stage("Destroy") {
+                sh "ansible-galaxy install -r requirements.yml"
                 sh "cd ./${role} && molecule destroy -s install-linux-os"
 //                sh "cd ./${role} && molecule destroy -s install-win10"
             }

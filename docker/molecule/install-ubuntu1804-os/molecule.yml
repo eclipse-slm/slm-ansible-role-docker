@@ -1,0 +1,18 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: delegated
+platforms:
+  - name: ubuntu1804
+    image_name: ansible-dev-ubuntu-18-04
+    groups: ['ssh']
+provisioner:
+  name: ansible
+  playbooks:
+    create: ../default/create-os.yml
+    destroy: ../default/destroy-os.yml
+    converge: ../default-install/converge.yml
+    verify: ../default-install/verify.yml
+verifier:
+  name: ansible

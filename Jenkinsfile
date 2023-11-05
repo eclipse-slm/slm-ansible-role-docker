@@ -1,28 +1,33 @@
 def scenarios = [
     "ubuntu2204": [
-        "install-linux",
-        "install-tcp-linux",
-        "uninstall-linux"
+        "install-linux-os",
+        "install-tcp-linux-os",
+        "uninstall-linux-os"
     ],
     "ubuntu2004": [
-        "install-linux",
-        "install-tcp-linux",
-        "uninstall-linux"
+        "install-linux-os",
+        "install-tcp-linux-os",
+        "uninstall-linux-os"
     ],
     "ubuntu1804": [
-        "install-linux",
-        "install-tcp-linux",
-        "uninstall-linux"
+        "install-linux-os",
+        "install-tcp-linux-os",
+        "uninstall-linux-os"
+    ],
+    "centos9": [
+            "install-linux-os",
+            "install-tcp-linux-os",
+            "uninstall-linux-os"
     ],
     "centos8": [
-        "install-linux",
-        "install-tcp-linux",
-        "uninstall-linux"
+        "install-linux-os",
+        "install-tcp-linux-os",
+        "uninstall-linux-os"
     ],
     "centos7": [
-        "install-linux",
-        "install-tcp-linux",
-        "uninstall-linux"
+        "install-linux-os",
+        "install-tcp-linux-os",
+        "uninstall-linux-os"
     ]
 //    ,
 //    "win10-winrm": [

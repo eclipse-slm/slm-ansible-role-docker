@@ -1,0 +1,31 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: delegated
+platforms:
+#  CENTOS:
+  - name: centos7
+    image_name: ansible-dev-centos-7
+    groups: ['ssh']
+
+  - name: centos8
+    image_name: ansible-dev-centos-8-stream
+    groups: ['ssh']
+
+  - name: centos9
+    image_name: ansible-dev-centos-9-stream
+    groups: ['ssh']
+provisioner:
+  name: ansible
+  playbooks:
+    create: ../default/create-os.yml
+    destroy: ../default/destroy-os.yml
+    converge: ../default-install/converge.yml
+    verify: ../default-install/verify-tcp.yml
+  inventory:
+    group_vars:
+      ssh:
+        expose_docker_tcp_port: true
+verifier:
+  name: ansible

@@ -32,14 +32,21 @@
 - name: Install 'docker', 'docker-compose' pip package (CentOS 8)
   ansible.builtin.pip:
     name:
-      - docker
-      - docker-compose
+      - docker==5.0.3
+      - docker-compose==1.29.2
   when: ansible_distribution_major_version == "8"
 
 - name: Install 'docker', 'docker-compose' pip package (CentOS 9)
-  ansible.builtin.pip:
-    name:
-      - docker
-      - docker-compose
-  ignore_errors: true
   when: ansible_distribution_major_version == "9"
+  block:
+    - name: Remove python3-requests rpm-package
+      ansible.builtin.package:
+        name: python3-requests
+        state: absent
+
+    - name: Install pip packages
+      ansible.builtin.pip:
+        name:
+          - docker==6.1.3
+          - docker-compose==1.29.2
+      ignore_errors: true

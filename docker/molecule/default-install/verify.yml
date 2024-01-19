@@ -4,15 +4,20 @@
 - name: Verify (ssh)
   hosts: ssh
   gather_facts: yes
+  become: yes
   tasks:
     - name: Do hello-world (no-Windows)
       ansible.builtin.command: docker run hello-world
-      become: yes
       register: result
       retries: 5
       delay: 5
       until: result.rc == 0
 
+    - name: "Create Docker Compose Stack (Linux)"
+      community.docker.docker_compose:
+       state: "present"
+       project_name: "hello-world"
+       definition: "{{ lookup('file', 'docker-compose.yml') | from_yaml }}"
 
 - name: Verify (winrm)
   hosts: winrm

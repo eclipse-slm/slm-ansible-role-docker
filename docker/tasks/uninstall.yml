@@ -1,4 +1,14 @@
 ---
+- name: Unsupported Linux distribution
+  fail:
+    msg: "Unsupported Linux distribution: {{ ansible_distribution }}"
+  when: not ((ansible_os_family == "Windows") or
+        (ansible_distribution == 'CentOS') or 
+        (ansible_distribution == 'Ubuntu') or 
+        ((ansible_distribution == 'Debian') and (ansible_lsb.id != 'Raspbian')) or
+        ((ansible_distribution == 'Debian') and (ansible_lsb.id == 'Raspbian'))
+        )
+
 - name: Include CentOS Uninstall Tasks
   include_tasks: dist-specific/centos_uninstall.yml
   when: ansible_distribution == 'CentOS'
@@ -6,6 +16,12 @@
 - name: Include Ubuntu Uninstall Tasks
   include_tasks: dist-specific/ubuntu_uninstall.yml
   when: ansible_distribution == 'Ubuntu'
+
+- name: Include Debian Uninstall Tasks
+  include_tasks: dist-specific/debian_uninstall.yml
+  when:
+    - ansible_distribution == 'Debian'
+    - ansible_lsb.id != 'Raspbian'
 
 - name: Include Raspbian Uninstall Tasks
   include_tasks: dist-specific/raspbian_uninstall.yml

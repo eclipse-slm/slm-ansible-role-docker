@@ -1,4 +1,20 @@
 ---
+- debug:
+    var: ansible_distribution
+
+- debug:
+    var: ansible_lsb
+
+- name: Unsupported Linux distribution
+  fail:
+    msg: "Unsupported Linux distribution: {{ ansible_distribution }}"
+  when: not ((ansible_os_family == "Windows") or
+        (ansible_distribution == 'CentOS') or 
+        (ansible_distribution == 'Ubuntu') or 
+        ((ansible_distribution == 'Debian') and (ansible_lsb.id != 'Raspbian')) or
+        ((ansible_distribution == 'Debian') and (ansible_lsb.id == 'Raspbian'))
+        )
+
 - name: Cleanup before install
   ansible.builtin.include_tasks: helper/cleanup_before_install.yml
 
@@ -9,6 +25,12 @@
 - name: Include Ubuntu Install Tasks
   ansible.builtin.include_tasks: dist-specific/ubuntu_install.yml
   when: (ansible_distribution == 'Ubuntu')
+
+- name: Include Debian Install Tasks
+  ansible.builtin.include_tasks: dist-specific/debian_install.yml
+  when:
+    - ansible_distribution == 'Debian'
+    - ansible_lsb.id != 'Raspbian'
 
 - name: Include Raspbian Install Tasks
   ansible.builtin.include_tasks: dist-specific/raspbian_install.yml
@@ -25,11 +47,3 @@
   when:
     - expose_docker_tcp_port | default(expose_docker_tcp_port_default)
     - ansible_os_family != "Windows"
-
-- name: Unsupported Linux distribution
-  fail:
-    msg: "Unsupported Linux distribution: {{ ansible_distribution }}"
-  when: not ((ansible_os_family == "Windows") or
-        (ansible_distribution == 'CentOS') or 
-        (ansible_distribution == 'Ubuntu') or 
-        ((ansible_distribution == 'Debian') and (ansible_lsb.id == 'Raspbian')))

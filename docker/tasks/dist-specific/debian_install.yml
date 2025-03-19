@@ -24,9 +24,3 @@
   until: not run_script_result.rc == 100
   retries: 5
   delay: 3
-
-- name: Install pip packages
-  ansible.builtin.pip:
-    name:
-      - docker
-      - docker-compose

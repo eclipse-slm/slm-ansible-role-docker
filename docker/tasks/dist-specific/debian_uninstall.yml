@@ -21,10 +21,3 @@
   ansible.builtin.file:
     path: /tmp/get-docker.sh
     state: absent
-
-- name: Remove pip packages
-  ansible.builtin.pip:
-    name:
-      - docker
-      - docker-compose
-    state: absent

@@ -37,8 +37,17 @@
   retries: 20
   delay: 10
 
-- name: Install pip packages (not-Ubuntu 18)
-  when: ansible_distribution_major_version != "18"
+- name: Install pip packages (greater/equal Ubuntu 24)
+  when: (ansible_distribution_major_version | int >= 24)
+  ansible.builtin.apt:
+    pkg:
+      - python3-docker
+  register: apt_pip_result
+  until: not apt_pip_result.failed
+  retries: 20
+
+- name: Install pip packages (Ubuntu 20, 22)
+  when: (ansible_distribution_major_version | int > 18) and (ansible_distribution_major_version | int < 24)
   ansible.builtin.pip:
     name:
       - docker==6.1.3

@@ -1,7 +1,7 @@
 ---
 - name: Remove docker-compose binary (not CentOS8/Ubuntu18)
   when:
-    - ((ansible_distribution == 'CentOS') and (ansible_distribution_major_version != "8")) or ((ansible_distribution == 'Ubuntu') and (ansible_distribution_major_version != "18"))
+    - ((ansible_facts["distribution"] == 'CentOS') and (ansible_facts["distribution_major_version"] != "8")) or ((ansible_facts["distribution"] == 'Ubuntu') and (ansible_facts["distribution_major_version"] != "18"))
   block:
     - name: Pip freeze docker-compose
       ansible.builtin.shell: pip freeze | grep docker-compose
@@ -18,7 +18,7 @@
 
 - name: Remove docker-compose binary (CentOS8/Ubuntu18)
   when:
-    - ((ansible_distribution == 'CentOS') and (ansible_distribution_major_version == "8")) or ((ansible_distribution == 'Ubuntu') and (ansible_distribution_major_version == "18"))
+    - ((ansible_facts["distribution"] == 'CentOS') and (ansible_facts["distribution_major_version"] == "8")) or ((ansible_facts["distribution"] == 'Ubuntu') and (ansible_facts["distribution_major_version"] == "18"))
   block:
     - name: Pip3 freeze docker-compose
       ansible.builtin.shell: pip3 freeze | grep docker-compose
@@ -34,14 +34,22 @@
       register: remove_docker_compose
 
 
-- name: Remove old conflicting packages
-  ansible.builtin.apt:
-    pkg:
-      - docker.io
-      - docker-compose
-      - docker-doc
-      - podman-docker
-      - containerd
-      - runc
-    state: absent
-  when: (ansible_distribution == 'Ubuntu')
+- name: Remove old conflicting packages (Ubuntu)
+  when: (ansible_facts["distribution"] == 'Ubuntu')
+  block:
+    - name: Remove old conflicting packages (Version != 18)
+      when: ansible_facts["distribution_major_version"] != "18"
+      ansible.builtin.apt:
+        pkg:
+          - docker.io
+          - docker-compose
+          - docker-doc
+          - podman-docker
+          - containerd
+          - runc
+        state: absent
+
+    - name: Remove old conflicting packages (Version == 18)
+      when: ansible_facts["distribution_major_version"] == "18"
+      ansible.builtin.raw: |
+        apt-get remove -y docker.io docker-compose docker-doc containerd runc

@@ -2,7 +2,7 @@
 dependency:
   name: galaxy
 driver:
-  name: delegated
+  name: default
 platforms:
   - name: ubuntu1804
     template_name: ubuntu-18-04

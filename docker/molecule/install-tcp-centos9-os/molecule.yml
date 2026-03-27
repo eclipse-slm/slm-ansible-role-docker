@@ -2,7 +2,7 @@
 dependency:
   name: galaxy
 driver:
-  name: delegated
+  name: default
 platforms:
   - name: centos9
     image_name: ansible-dev-centos-9-stream

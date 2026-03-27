@@ -2,24 +2,28 @@
 dependency:
   name: galaxy
 driver:
-  name: delegated
+  name: default
 platforms:
   - name: ubuntu1804
-    template_name: ubuntu-18-04
+    image_name: Ubuntu 18.04 64-bit
     groups: ['ssh']
 
   - name: ubuntu2004
-    template_name: ubuntu-20-04
+    image_name: Ubuntu 20.04 64-bit
     groups: ['ssh']
 
   - name: ubuntu2204
-    template_name: ubuntu-22-04
+    image_name: Ubuntu 22.04 64-bit
+    groups: ['ssh']
+
+  - name: ubuntu2404
+    image_name: Ubuntu 24.04 64-bit
     groups: ['ssh']
 provisioner:
   name: ansible
   playbooks:
-    create: ../default/create.yml
-    destroy: ../default/destroy.yml
+    create: ../default/create-os.yml
+    destroy: ../default/destroy-os.yml
     converge: ../default-install/converge.yml
     verify: ../default-install/verify.yml
 verifier:

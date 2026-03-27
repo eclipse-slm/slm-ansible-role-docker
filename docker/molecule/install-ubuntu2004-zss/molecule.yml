@@ -3,7 +3,7 @@ dependency:
   name: galaxy
 driver:
 #  name: default
-  name: delegated
+  name: default
 platforms:
   - name: ubuntu2004-zss
     template_name: ubuntu-20-04

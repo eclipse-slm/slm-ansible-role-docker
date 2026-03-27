@@ -14,7 +14,7 @@
       until: result.rc == 0
 
     - name: "Create Docker Compose Stack (Linux)"
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
        state: "present"
        project_name: "hello-world"
        definition: "{{ lookup('file', 'docker-compose.yml') | from_yaml }}"

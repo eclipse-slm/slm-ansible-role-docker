@@ -2,10 +2,10 @@
 dependency:
   name: galaxy
 driver:
-  name: delegated
+  name: default
 platforms:
   - name: ubuntu1804
-    image_name: ansible-dev-ubuntu-18-04
+    image_name: Ubuntu 18.04 64-bit
     groups: ['ssh']
 provisioner:
   name: ansible

@@ -7,5 +7,5 @@
   tasks:
     - name: Create via openstack
       ansible.builtin.include_role:
-        name: molecule_openstack
+        name: ipa-big.molecule_openstack
         tasks_from: create.yml

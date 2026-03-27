@@ -3,7 +3,7 @@
   ansible.builtin.yum_repository:
     name: docker
     description: Docker stable repository
-    baseurl: "https://download.docker.com/linux/centos/{{ ansible_distribution_major_version }}/x86_64/stable"
+    baseurl: "https://download.docker.com/linux/centos/{{ ansible_facts['distribution_major_version'] }}/x86_64/stable"
     gpgcheck: no
 
 - name: Install docker
@@ -34,10 +34,10 @@
     name:
       - docker==5.0.3
       - docker-compose==1.29.2
-  when: ansible_distribution_major_version == "8"
+  when: ansible_facts["distribution_major_version"] == "8"
 
 - name: Install 'docker', 'docker-compose' pip package (CentOS 9)
-  when: ansible_distribution_major_version == "9"
+  when: ansible_facts["distribution_major_version"] == "9"
   block:
     - name: Remove python3-requests rpm-package
       ansible.builtin.package:

@@ -43,7 +43,7 @@
   ansible.builtin.yum_repository:
     name: docker
     description: Docker stable repository
-    baseurl: "https://download.docker.com/linux/centos/{{ ansible_distribution_major_version }}/x86_64/stable"
+    baseurl: "https://download.docker.com/linux/centos/{{ ansible_facts['distribution_major_version'] }}/x86_64/stable"
     gpgcheck: no
 
 - name: Install docker

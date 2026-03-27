@@ -1,44 +1,44 @@
 ---
 - name: Unsupported Linux distribution
   fail:
-    msg: "Unsupported Linux distribution: {{ ansible_distribution }}"
-  when: not ((ansible_os_family == "Windows") or
-        (ansible_distribution == 'CentOS') or 
-        (ansible_distribution == 'Ubuntu') or 
-        ((ansible_distribution == 'Debian') and (ansible_lsb.id != 'Raspbian')) or
-        ((ansible_distribution == 'Debian') and (ansible_lsb.id == 'Raspbian'))
+    msg: "Unsupported Linux distribution: {{ ansible_facts['distribution'] }}"
+  when: not ((ansible_facts["os_family"] == "Windows") or
+        (ansible_facts["distribution"] == 'CentOS') or 
+        (ansible_facts["distribution"] == 'Ubuntu') or 
+        ((ansible_facts["distribution"] == 'Debian') and (ansible_facts["lsb.id"] != 'Raspbian')) or
+        ((ansible_facts["distribution"] == 'Debian') and (ansible_facts["lsb.id"] == 'Raspbian'))
         )
 
 - name: Include CentOS Uninstall Tasks
   include_tasks: dist-specific/centos_uninstall.yml
-  when: ansible_distribution == 'CentOS'
+  when: ansible_facts["distribution"] == 'CentOS'
 
 - name: Include Ubuntu Uninstall Tasks
   include_tasks: dist-specific/ubuntu_uninstall.yml
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_facts["distribution"] == 'Ubuntu'
 
 - name: Include Debian Uninstall Tasks
   include_tasks: dist-specific/debian_uninstall.yml
   when:
-    - ansible_distribution == 'Debian'
-    - ansible_lsb.id != 'Raspbian'
+    - ansible_facts["distribution"] == 'Debian'
+    - ansible_facts["lsb.id"] != 'Raspbian'
 
 - name: Include Raspbian Uninstall Tasks
   include_tasks: dist-specific/raspbian_uninstall.yml
   when:
-    - ansible_distribution == 'Debian'
-    - ansible_lsb.id == 'Raspbian'
+    - ansible_facts["distribution"] == 'Debian'
+    - ansible_facts["lsb.id"] == 'Raspbian'
 
 - name: Include Windows 10 Uninstall Tasks
   ansible.builtin.include_tasks: dist-specific/win_10_uninstall.yml
-  when: ansible_os_family == "Windows"
+  when: ansible_facts["os_family"] == "Windows"
 
 - name: Remove config files for exposing TCP port (Linux)
   ansible.builtin.include_tasks: helper/remove_config_for_expose_tcp_port.yml
   when:
-    - ansible_os_family != "Windows"
+    - ansible_facts["os_family"] != "Windows"
 
 - name: Remove config files for exposing TCP port (Windows)
   ansible.builtin.include_tasks: helper/remove_config_for_expose_tcp_port_win.yml
   when:
-    - ansible_os_family == "Windows"
+    - ansible_facts["os_family"] == "Windows"

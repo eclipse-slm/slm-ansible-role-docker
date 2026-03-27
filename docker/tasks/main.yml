@@ -1,5 +1,9 @@
 ---
 # tasks file for docker
+- name: Prepare target host for docker installation
+  ansible.builtin.include_tasks: prepare.yml
+  when: state == "prepare"
+
 - name: Install docker on target host
   ansible.builtin.include_tasks: install.yml
   when: state == "present"

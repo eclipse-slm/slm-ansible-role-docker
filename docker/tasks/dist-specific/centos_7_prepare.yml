@@ -1,0 +1,55 @@
+- name: Fix repo URLs
+  ansible.builtin.raw: |
+    sed -i 's/mirror\.centos\.org/vault.centos.org/g' /etc/yum.repos.d/CentOS-*.repo
+    sed -i 's/^#.*baseurl=http/baseurl=http/g' /etc/yum.repos.d/CentOS-*.repo
+    sed -i 's/^mirrorlist=http/#mirrorlist=http/g' /etc/yum.repos.d/CentOS-*.repo
+  changed_when: false
+
+- name: Yum update and install centos-release-scl
+  ansible.builtin.raw: |
+    yum update -y
+    yum install -y centos-release-scl
+  changed_when: false
+
+- name: Fix repo URLs
+  ansible.builtin.raw: |
+    sed -i 's/mirror\.centos\.org/vault.centos.org/g' /etc/yum.repos.d/CentOS-*.repo
+    sed -i 's/^#.*baseurl=http/baseurl=http/g' /etc/yum.repos.d/CentOS-*.repo
+    sed -i 's/^mirrorlist=http/#mirrorlist=http/g' /etc/yum.repos.d/CentOS-*.repo
+  changed_when: false
+
+- name: Install Dev Tools
+  ansible.builtin.raw: |
+    yum groupinstall "Development Tools" -y
+    yum install epel-release -y
+    yum clean all
+    yum install openssl11-devel libffi-devel bzip2-devel xz-devel wget -y
+  changed_when: false
+
+- name: Download Python
+  ansible.builtin.raw: |
+    wget https://www.python.org/ftp/python/3.11.3/Python-3.11.3.tgz -O /tmp/Python-3.11.3.tgz
+    cd /tmp && tar xzf Python-3.11.3.tgz
+  changed_when: false
+
+- name: Check if Python 3.11 exists
+  ansible.builtin.raw: test -f /usr/local/bin/python3.11
+  register: python_check
+  failed_when: false
+  changed_when: false
+
+- name: Build and install Python
+  when: python_check.rc != 0
+  ansible.builtin.raw: |
+    cd /tmp/Python-3.11.3
+    export CFLAGS=$(pkg-config --cflags openssl11)
+    export LDFLAGS=$(pkg-config --libs openssl11)
+    ./configure --with-openssl-rpath=auto
+    make -j $(nproc)
+    make altinstall
+  register: download_python
+  changed_when: false
+
+- name: Set Interpreter
+  ansible.builtin.set_fact:
+    ansible_python_interpreter: "/usr/local/bin/python3.11"

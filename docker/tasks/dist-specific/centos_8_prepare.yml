@@ -1,0 +1,16 @@
+- name: Fix repo URLs
+  ansible.builtin.raw: |
+    sed -i 's/mirror\.centos\.org/vault.centos.org/g' /etc/yum.repos.d/CentOS-*.repo
+    sed -i 's/^#.*baseurl=http/baseurl=http/g' /etc/yum.repos.d/CentOS-*.repo
+    sed -i 's/^mirrorlist=http/#mirrorlist=http/g' /etc/yum.repos.d/CentOS-*.repo
+  changed_when: false
+
+- name: Install Python 3.9
+  ansible.builtin.raw: |
+    yum update -y
+    yum install -y python39 python39-devel python39-pip python3-dnf python3-pip
+  changed_when: false
+
+- name: Set Interpreter
+  ansible.builtin.set_fact:
+    ansible_python_interpreter: "/usr/bin/python3.9"

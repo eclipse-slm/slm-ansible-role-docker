@@ -4,23 +4,15 @@ dependency:
 driver:
   name: default
 platforms:
-  - name: centos7
-    image_name: ansible-dev-centos-7
-    groups: ['ssh']
-
-  - name: centos8
-    image_name: ansible-dev-centos-8-stream
-    groups: ['ssh']
-
-  - name: centos9
-    image_name: ansible-dev-centos-9-stream
+  - name: debian12
+    image_name: Debian 12 64-bit
     groups: ['ssh']
 provisioner:
   name: ansible
   playbooks:
     create: ../default/create-os.yml
-    destroy: ../default/destroy-os.yml
     converge: ../default-install/converge.yml
     verify: ../default-install/verify.yml
+    destroy: ../default/destroy-os.yml
 verifier:
   name: ansible

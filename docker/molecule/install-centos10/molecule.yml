@@ -4,8 +4,8 @@ dependency:
 driver:
   name: default
 platforms:
-  - name: centos7
-    image_name: ansible-dev-centos-7
+  - name: centos9
+    image_name: CentOS 10 Stream 64-bit
     groups: ['ssh']
 provisioner:
   name: ansible

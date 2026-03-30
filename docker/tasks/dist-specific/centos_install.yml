@@ -1,5 +1,11 @@
 ---
-- name: Install the yum-utils package
+- name: Install the yum-utils package (CentOS < 9)
+  when: ansible_facts["distribution_major_version"] | int < 9
+  ansible.builtin.command: yum install -y yum-utils
+  changed_when: false
+
+- name: Install the yum-utils package (CentOS >= 9)
+  when: ansible_facts["distribution_major_version"] | int >= 9
   ansible.builtin.yum:
     name: yum-utils
 
@@ -7,6 +13,6 @@
   when: ansible_facts["distribution_major_version"] == "7"
   ansible.builtin.include_tasks: dist-specific/centos_7_install.yml
 
-- name: Run CentOS8/9-specific install part
-  when: (ansible_facts["distribution_major_version"] == "8") or (ansible_facts["distribution_major_version"] == "9")
+- name: Run >= CentOS8-specific install part
+  when: ansible_facts["distribution_major_version"] | int >= 8
   ansible.builtin.include_tasks: dist-specific/centos_8_9_install.yml

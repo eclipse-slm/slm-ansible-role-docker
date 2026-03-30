@@ -1,8 +1,19 @@
 ---
-- name: Uninstall docker engine
-  ansible.builtin.yum:
-    name:
+- name: Set yum packages
+  ansible.builtin.set_fact:
+    yum_pacakges:
       - docker-ce
       - docker-ce-cli
       - containerd.io
+
+- name: Uninstall docker engine (CentOS >= 9)
+  when: ansible_facts["distribution_major_version"] | int >= 9
+  ansible.builtin.yum:
+    name: "{{ yum_packages }}"
     state: absent
+
+- name: Uninstall docker engine (CentOS < 9)
+  when: ansible_facts["distribution_major_version"] | int < 9
+  ansible.builtin.shell: |
+    yum remove -y {{ yum_packages | join(' ') }}
+  changed_when: false

@@ -5,8 +5,8 @@
   when: not ((ansible_facts["os_family"] == "Windows") or
         (ansible_facts["distribution"] == 'CentOS') or 
         (ansible_facts["distribution"] == 'Ubuntu') or 
-        ((ansible_facts["distribution"] == 'Debian') and (ansible_facts["lsb.id"] != 'Raspbian')) or
-        ((ansible_facts["distribution"] == 'Debian') and (ansible_facts["lsb.id"] == 'Raspbian'))
+        ((ansible_facts["distribution"] == 'Debian') and (ansible_facts["lsb.id"] | default('') != 'Raspbian')) or
+        ((ansible_facts["distribution"] == 'Debian') and (ansible_facts["lsb.id"] | default('') == 'Raspbian'))
         )
 
 - name: Include CentOS Uninstall Tasks
@@ -21,13 +21,13 @@
   include_tasks: dist-specific/debian_uninstall.yml
   when:
     - ansible_facts["distribution"] == 'Debian'
-    - ansible_facts["lsb.id"] != 'Raspbian'
+    - ansible_facts["lsb.id"] | default('') != 'Raspbian'
 
 - name: Include Raspbian Uninstall Tasks
   include_tasks: dist-specific/raspbian_uninstall.yml
   when:
     - ansible_facts["distribution"] == 'Debian'
-    - ansible_facts["lsb.id"] == 'Raspbian'
+    - ansible_facts["lsb.id"] | default('') == 'Raspbian'
 
 - name: Include Windows 10 Uninstall Tasks
   ansible.builtin.include_tasks: dist-specific/win_10_uninstall.yml

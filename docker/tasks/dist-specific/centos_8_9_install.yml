@@ -1,12 +1,26 @@
 ---
-- name: Add stable docker repository
+- name: Add stable docker repository (CentOS 8)
+  when: ansible_facts["distribution_major_version"] == "8"
+  ansible.builtin.command: |
+    yum config-manager --add-repo https://download.docker.com/linux/centos/{{ ansible_facts['distribution_major_version'] }}/x86_64/stable
+  changed_when: false
+
+- name: Add stable docker repository (CentOS >= 9)
+  when: ansible_facts["distribution_major_version"] | int >= 9
   ansible.builtin.yum_repository:
     name: docker
     description: Docker stable repository
     baseurl: "https://download.docker.com/linux/centos/{{ ansible_facts['distribution_major_version'] }}/x86_64/stable"
     gpgcheck: no
 
-- name: Install docker
+- name: Install docker (CentOS 8)
+  when: ansible_facts["distribution_major_version"] == "8"
+  ansible.builtin.shell: |
+    yum update -y && yum install -y docker-ce docker-ce-cli containerd.io --nogpgcheck
+  changed_when: false
+
+- name: Install docker (CentOS >= 9)
+  when: ansible_facts["distribution_major_version"] | int >= 9
   ansible.builtin.yum:
     name:
       - docker-ce
@@ -20,7 +34,8 @@
     name: docker
     enabled: yes
 
-- name: Install pip3
+- name: Install pip3 (CentOS >= 9)
+  when: ansible_facts["distribution_major_version"] | int >= 9
   ansible.builtin.yum:
     name: python3-pip
 
@@ -29,24 +44,28 @@
     name: pip
     state: latest
 
-- name: Install 'docker', 'docker-compose' pip package (CentOS 8)
+- name: Install pip package (CentOS 8)
   ansible.builtin.pip:
     name:
-      - docker==5.0.3
-      - docker-compose==1.29.2
+      - PyYAML==6.0.3
+#      - docker==5.0.3
+#      - docker-compose==1.29.2
   when: ansible_facts["distribution_major_version"] == "8"
 
-- name: Install 'docker', 'docker-compose' pip package (CentOS 9)
-  when: ansible_facts["distribution_major_version"] == "9"
+- name: Install 'docker', 'docker-compose' pip package (CentOS >= 9)
+  when: ansible_facts["distribution_major_version"] | int >= 9
   block:
     - name: Remove python3-requests rpm-package
       ansible.builtin.package:
-        name: python3-requests
+        name:
+          - python3-requests
+          - python3-PyYAML
         state: absent
 
     - name: Install pip packages
       ansible.builtin.pip:
         name:
-          - docker==6.1.3
-          - docker-compose==1.29.2
+          - PyYAML==6.0.3
+#          - docker==6.1.3
+#          - docker-compose==1.29.2
       ignore_errors: true

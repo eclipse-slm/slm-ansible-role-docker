@@ -1,8 +1,24 @@
 ---
-- name: Uninstall docker engine
-  ansible.builtin.apt:
-    pkg:
+- name: Set packages to be removed
+  ansible.builtin.set_fact:
+    packages_to_remove:
       - docker-ce
       - docker-ce-cli
       - containerd.io
+
+- name: Uninstall docker engine (ansible-based)
+  ansible.builtin.apt:
+    pkg: "{{ packages_to_remove }}"
     state: absent
+  ignore_errors: true
+  register: uninstall_result
+
+- name: Uninstall docker engine (shell-based)
+  when: uninstall_result is failed
+  ansible.builtin.shell: |
+    apt remove -y {{ packages_to_remove | join(' ') }}
+  register: shell_uninstall_result
+  changed_when: false
+  
+
+  

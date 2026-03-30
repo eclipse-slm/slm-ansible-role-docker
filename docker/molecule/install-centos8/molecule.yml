@@ -5,27 +5,14 @@ driver:
   name: default
 platforms:
   - name: centos8
-    template_name: centos-stream-8
+    image_name: CentOS 8 64-bit
     groups: ['ssh']
 provisioner:
   name: ansible
   playbooks:
-    create: ../default/create.yml
-    destroy: ../default/destroy.yml
+    create: ../default/create-os.yml
+    destroy: ../default/destroy-os.yml
     converge: ../default-install/converge.yml
     verify: ../default-install/verify.yml
-scenario:
-  test_sequence:
-    - dependency
-    - lint
-    - cleanup
-    - destroy
-    - syntax
-    - create
-    - prepare
-    - converge
-    - idempotence
-    - side_effect
-    - verify
 verifier:
   name: ansible

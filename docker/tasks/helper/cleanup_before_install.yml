@@ -15,6 +15,7 @@
         state: absent
       when: '"docker-compose" not in pip_freeze_dc.stdout'
       register: remove_docker_compose
+      changed_when: false
 
 - name: Remove docker-compose binary (CentOS8/Ubuntu18)
   when:
@@ -37,8 +38,8 @@
 - name: Remove old conflicting packages (Ubuntu)
   when: (ansible_facts["distribution"] == 'Ubuntu')
   block:
-    - name: Remove old conflicting packages (Version != 18)
-      when: ansible_facts["distribution_major_version"] != "18"
+    - name: Remove old conflicting packages (Ubuntu > 20)
+      when: ansible_facts["distribution_major_version"] | int > 20
       ansible.builtin.apt:
         pkg:
           - docker.io
@@ -49,7 +50,8 @@
           - runc
         state: absent
 
-    - name: Remove old conflicting packages (Version == 18)
-      when: ansible_facts["distribution_major_version"] == "18"
+    - name: Remove old conflicting packages (Ubuntu <= 20)
+      when: ansible_facts["distribution_major_version"] | int <= 20
       ansible.builtin.raw: |
         apt-get remove -y docker.io docker-compose docker-doc containerd runc
+      changed_when: false

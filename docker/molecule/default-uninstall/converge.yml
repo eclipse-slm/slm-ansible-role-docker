@@ -1,12 +1,12 @@
 ---
-- name: Test Connectivity
+- name: Converge - Prepare (ssh)
   hosts: all
-  gather_facts: false
-  tasks:
-    - name: Test Connection
-      ansible.builtin.include_role:
-        name: molecule_openstack
-        tasks_from: test_ssh_connection.yml
+  gather_facts: no
+  become: yes
+  vars:
+    state: prepare
+  roles:
+    - "../../../docker"
 
 - name: Converge - Uninstall (ssh)
   hosts: ssh
@@ -14,10 +14,8 @@
   become: yes
   vars:
     state: absent
-  tasks:
-    - name: "Include docker - state = absent (no-Windows)"
-      ansible.builtin.include_role:
-        name: "docker"
+  roles:
+    - "../../../docker"
 
 - name: Converge - Uninstall (winrm/win-ssh)
   hosts: winrm:win-ssh
@@ -36,4 +34,4 @@
 
     - name: "Include docker - state = present"
       ansible.builtin.include_role:
-        name: "docker"
+        name: "../../../docker"

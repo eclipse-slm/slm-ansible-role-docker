@@ -1,3 +1,5 @@
 .idea
 .test
 .run
+.env
+local.env

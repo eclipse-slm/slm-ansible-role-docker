@@ -1,0 +1,23 @@
+{
+	"name": "ansible-dev-container-docker",
+	"image": "ghcr.io/eclipse-slm/molecule:26.3.0",
+  	"initializeCommand": "docker pull ghcr.io/eclipse-slm/molecule:26.3.0",
+	"containerUser": "root",
+	"runArgs": [
+		"--privileged",
+		"--device",
+		"/dev/fuse",
+		"--hostname=ansible-dev-container",
+		"--env-file=.devcontainer/local.env",
+		"--volume=/var/run/docker.sock:/var/run/docker.sock"
+	],
+	"updateRemoteUserUID": true,
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"redhat.ansible",
+				"ms-python.python"
+			]
+		}
+	}
+}

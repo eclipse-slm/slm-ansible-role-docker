@@ -107,8 +107,7 @@ for (kv in mapToList(scenarios)) {
 }
 
 node {
-    checkout https://github.com/eclipse-slm/slm-ansible-role-docker
-//    checkout scm
+   checkout scm
 
     withCredentials([usernamePassword(
             credentialsId: 'openstack-credentials',

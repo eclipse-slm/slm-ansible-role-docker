@@ -4,7 +4,7 @@ dependency:
 driver:
   name: default
 platforms:
-  - name: ubuntu2004
+  - name: ubuntu2404
     image_name: Ubuntu 24.04 64-bit
     groups: ['ssh']
 provisioner:

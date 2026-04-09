@@ -1,24 +1,24 @@
 def scenarios = [
     "ubuntu2404": [
-        "install-linux",
+        "install",
         //"install-tcp-linux-os",
-        "uninstall-linux"
+        "uninstall"
     ],
-//    "ubuntu2204": [
-//        "install-linux",
-//        //"install-tcp-linux-os",
-//        "uninstall-linux"
-//    ],
-//    "ubuntu2004": [
-//        "install-linux",
-//        //"install-tcp-linux-os",
-//        "uninstall-linux"
-//    ],
-//    "ubuntu1804": [
-//        "install-linux",
-//        //"install-tcp-linux-os",
-//        "uninstall-linux"
-//    ],
+   "ubuntu2204": [
+       "install",
+       //"install-tcp-linux-os",
+       "uninstall"
+   ],
+   "ubuntu2004": [
+       "install",
+       //"install-tcp-linux-os",
+       "uninstall"
+   ],
+   "ubuntu1804": [
+       "install",
+       //"install-tcp-linux-os",
+       "uninstall"
+   ],
 //    "centos10": [
 //            "install-linux",
 //            //"install-tcp-linux-os",
@@ -84,22 +84,26 @@ for (kv in mapToList(scenarios)) {
             stage("${platform} - Create") {
                 sh "ansible --version"
                 sh "molecule --version"
-                sh "cd ./${role} && molecule ${verbose} create -s install-${platform} --report"
+                sh "cd ./${role} && molecule ${verbose} create -s install-${platform} --shared-state --report"
             }
 
             try {
                 for(int i = 0; i < scenarioList.size(); i++) {
                     def scenario = scenarioList[i]
 
+                    stage("${platform} - ${scenario} - converge") {
+                        sh "cd ./${role} && molecule ${verbose} converge -s ${scenario}-${platform} --shared-state --report"
+                    }
 
-                        stage("${platform} - ${scenario}") {
-                            sh "cd ./${role} && molecule ${verbose} test -s ${scenario} -p ${platform} --destroy never --report"
-                        }
+
+                    stage("${platform} - ${scenario} - verify") {
+                        sh "cd ./${role} && molecule ${verbose} verify -s ${scenario}-${platform} --shared-state --report"
+                    }
 
                 }
             } finally {
                 stage("Destroy") {
-                    sh "cd ./${role} && molecule destroy -s install-linux --report"
+                    sh "cd ./${role} && molecule destroy -s install-${platform} --report"
                 }
             }
         }

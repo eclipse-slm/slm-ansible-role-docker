@@ -1,34 +1,59 @@
 def scenarios = [
-    "ubuntu2204": [
-        "install-linux-os",
-        "install-tcp-linux-os",
-        "uninstall-linux-os"
+    "ubuntu2404": [
+        "install-linux",
+        //"install-tcp-linux-os",
+        "uninstall-linux"
     ],
-    "ubuntu2004": [
-        "install-linux-os",
-        "install-tcp-linux-os",
-        "uninstall-linux-os"
-    ],
-    "ubuntu1804": [
-        "install-linux-os",
-        "install-tcp-linux-os",
-        "uninstall-linux-os"
-    ],
-    "centos9": [
-            "install-linux-os",
-            "install-tcp-linux-os",
-            "uninstall-linux-os"
-    ],
-    "centos8": [
-        "install-linux-os",
-        "install-tcp-linux-os",
-        "uninstall-linux-os"
-    ],
-    "centos7": [
-        "install-linux-os",
-        "install-tcp-linux-os",
-        "uninstall-linux-os"
-    ]
+//    "ubuntu2204": [
+//        "install-linux",
+//        //"install-tcp-linux-os",
+//        "uninstall-linux"
+//    ],
+//    "ubuntu2004": [
+//        "install-linux",
+//        //"install-tcp-linux-os",
+//        "uninstall-linux"
+//    ],
+//    "ubuntu1804": [
+//        "install-linux",
+//        //"install-tcp-linux-os",
+//        "uninstall-linux"
+//    ],
+//    "centos10": [
+//            "install-linux",
+//            //"install-tcp-linux-os",
+//            "uninstall-linux"
+//    ],
+//    "centos9": [
+//            "install-linux",
+//            //"install-tcp-linux-os",
+//            "uninstall-linux"
+//    ],
+//    "centos8": [
+//        "install-linux",
+//        //"install-tcp-linux-os",
+//        "uninstall-linux"
+//    ],
+//    "centos7": [
+//        "install-linux",
+//        //"install-tcp-linux-os",
+//        "uninstall-linux"
+//    ],
+//     "debian13": [
+//         "install-linux",
+//         //"install-tcp-linux-os",
+//         "uninstall-linux"
+//     ],
+//     "debian12": [
+//         "install-linux",
+//         //"install-tcp-linux-os",
+//         "uninstall-linux"
+//     ],
+//     "debian11": [
+//         "install-linux",
+//         //"install-tcp-linux-os",
+//         "uninstall-linux"
+//     ]
 //    ,
 //    "win10-winrm": [
 //        "install-win10",
@@ -43,6 +68,7 @@ def scenarios = [
 ]
 
 def role = "docker"
+def verbose = "-vv"
 
 parallel_stages = [:]
 
@@ -51,14 +77,14 @@ for (kv in mapToList(scenarios)) {
     def scenarioList = kv[1]
 
     parallel_stages[platform] = {
-        docker.image("${MOLECULE_DOCKER_IMAGE}").inside('-u root') {
-
-            stage("Install dependencies") {
-                sh "ansible-galaxy install -f -r requirements.yml"
-            }
+        docker
+          .image("${MOLECULE_DOCKER_IMAGE}")
+          .inside("--name ${JOB_NAME}_${platform} -e OS_AUTH_URL=${OS_AUTH_URL} -e OS_USERNAME=${OS_APPLICATION_CREDENTIAL_ID} -e OS_PASSWORD=${OS_APPLICATION_CREDENTIAL_SECRET} -u root") {
 
             stage("${platform} - Create") {
-                sh "cd ./${role} && molecule -vvv create -s install-${platform}-os"
+                sh "ansible --version"
+                sh "molecule --version"
+                sh "cd ./${role} && molecule ${verbose} create -s install-${platform} --report"
             }
 
             try {
@@ -67,13 +93,13 @@ for (kv in mapToList(scenarios)) {
 
 
                         stage("${platform} - ${scenario}") {
-                            sh "cd ./${role} && molecule -vvv test -s ${scenario} -p ${platform} --destroy never"
+                            sh "cd ./${role} && molecule ${verbose} test -s ${scenario} -p ${platform} --destroy never --report"
                         }
 
                 }
             } finally {
                 stage("Destroy") {
-                    sh "cd ./${role} && molecule destroy -s install-linux-os"
+                    sh "cd ./${role} && molecule destroy -s install-linux --report"
                 }
             }
         }
@@ -81,7 +107,8 @@ for (kv in mapToList(scenarios)) {
 }
 
 node {
-    checkout scm
+    checkout https://github.com/eclipse-slm/slm-ansible-role-docker
+//    checkout scm
 
     withCredentials([usernamePassword(
             credentialsId: 'openstack-credentials',
@@ -89,7 +116,7 @@ node {
             passwordVariable: 'OS_APPLICATION_CREDENTIAL_SECRET'
     )]) {
         stage("Pull molecule image") {
-            sh "ansible-galaxy install -r requirements.yml"
+//            sh "ansible-galaxy install -r requirements.yml"
             sh "docker pull ${MOLECULE_DOCKER_IMAGE}"
         }
 

@@ -81,12 +81,6 @@ for (kv in mapToList(scenarios)) {
           .image("${MOLECULE_DOCKER_IMAGE}")
           .inside("--name ${JOB_NAME}_${platform} -e OS_AUTH_URL=${OS_AUTH_URL} -e OS_USERNAME=${OS_APPLICATION_CREDENTIAL_ID} -e OS_PASSWORD=${OS_APPLICATION_CREDENTIAL_SECRET} -u root") {
 
-            // stage("${platform} - Create") {
-            //     sh "ansible --version"
-            //     sh "molecule --version"
-            //     sh "cd ./${role} && molecule ${verbose} create -s install-${platform} --shared-state --report"
-            // }
-
             try {
                 for(int i = 0; i < scenarioList.size(); i++) {
                     def scenario = scenarioList[i]
@@ -94,16 +88,10 @@ for (kv in mapToList(scenarios)) {
                     stage("${platform} - ${scenario}") {
                         sh "cd ./${role} && molecule ${verbose} test -s ${scenario}-${platform} --destroy never --report"
                     }
-
-
-                    // stage("${platform} - ${scenario}") {
-                    //     sh "cd ./${role} && molecule ${verbose} test -s uninstall-linux -p ${platform} --shared-state --destroy never --report"
-                    // }
-
                 }
             } finally {
                 stage("Destroy") {
-                    sh "cd ./${role} && molecule destroy -s uninstall-${platform} --report"
+                    sh "cd ./${role} && molecule destroy -s ${scenarioList[0]}-${platform} --report"
                 }
             }
         }

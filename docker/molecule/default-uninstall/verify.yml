@@ -6,7 +6,7 @@
   gather_facts: false
   tasks:
     - name: Do hello-world
-      ansible.builtin.command: docker run hello-world
+      ansible.builtin.command: docker run ghcr.io/eclipse-slm/hello-world:latest
       become: yes
       register: result
       failed_when: false
@@ -34,7 +34,7 @@
   become: yes
   tasks:
     - name: Do hello-world
-      ansible.windows.win_shell: docker run hello-world
+      ansible.windows.win_shell: docker run ghcr.io/eclipse-slm/hello-world:latest
       become: yes
       register: result
       failed_when: false

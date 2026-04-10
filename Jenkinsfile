@@ -1,70 +1,48 @@
 def scenarios = [
     "ubuntu2404": [
         "install",
-        //"install-tcp-linux-os",
         "uninstall"
     ],
    "ubuntu2204": [
        "install",
-       //"install-tcp-linux-os",
        "uninstall"
    ],
    "ubuntu2004": [
        "install",
-       //"install-tcp-linux-os",
        "uninstall"
    ],
    "ubuntu1804": [
        "install",
-       //"install-tcp-linux-os",
        "uninstall"
    ],
-//    "centos10": [
-//            "install-linux",
-//            //"install-tcp-linux-os",
-//            "uninstall-linux"
-//    ],
-//    "centos9": [
-//            "install-linux",
-//            //"install-tcp-linux-os",
-//            "uninstall-linux"
-//    ],
-//    "centos8": [
-//        "install-linux",
-//        //"install-tcp-linux-os",
-//        "uninstall-linux"
-//    ],
-//    "centos7": [
-//        "install-linux",
-//        //"install-tcp-linux-os",
-//        "uninstall-linux"
-//    ],
-//     "debian13": [
-//         "install-linux",
-//         //"install-tcp-linux-os",
-//         "uninstall-linux"
-//     ],
-//     "debian12": [
-//         "install-linux",
-//         //"install-tcp-linux-os",
-//         "uninstall-linux"
-//     ],
-//     "debian11": [
-//         "install-linux",
-//         //"install-tcp-linux-os",
-//         "uninstall-linux"
-//     ]
-//    ,
-//    "win10-winrm": [
-//        "install-win10",
-//        "install-tcp-win10",
-//        "uninstall-win10"
-//    ],
-//    "win10-ssh": [
-//        "install-win10",
-//        "install-tcp-win10",
-//        "uninstall-win10"
-//    ]
+   "centos10": [
+        "install",
+        "uninstall"
+   ],
+   "centos9": [
+        "install",
+        "uninstall"
+   ],
+   "centos8": [
+       "install",
+       "uninstall"
+   ],
+   "centos7": [
+       "install",
+       "uninstall"
+   ],
+     "debian13": [
+         "install",
+         "uninstall"
+     ],
+     "debian12": [
+         "install",
+         "uninstall"
+     ],
+     "debian11": [
+         "install",
+         "uninstall"
+     ]
 ]
 
 def role = "docker"
@@ -89,7 +67,7 @@ for (kv in mapToList(scenarios)) {
                         sh "cd ./${role} && molecule ${verbose} test -s ${scenario}-${platform} --destroy never --report"
                     }
                 }
-            } finally {
+            } finally {                
                 stage("Destroy") {
                     sh "cd ./${role} && molecule destroy -s ${scenarioList[0]}-${platform} --report"
                 }
@@ -107,7 +85,6 @@ node {
             passwordVariable: 'OS_APPLICATION_CREDENTIAL_SECRET'
     )]) {
         stage("Pull molecule image") {
-//            sh "ansible-galaxy install -r requirements.yml"
             sh "docker pull ${MOLECULE_DOCKER_IMAGE}"
         }
 

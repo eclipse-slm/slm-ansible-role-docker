@@ -1,4 +1,4 @@
 ---
 services:
   hello-world:
-    image: hello-world
+    image: ghcr.io/eclipse-slm/hello-world:latest

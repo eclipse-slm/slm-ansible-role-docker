@@ -4,7 +4,7 @@ dependency:
 driver:
   name: default
 platforms:
-  - name: centos9
+  - name: centos10
     image_name: CentOS 10 Stream 64-bit
     groups: ['ssh']
 provisioner:

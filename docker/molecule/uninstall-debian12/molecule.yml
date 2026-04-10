@@ -1,0 +1,20 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: default
+platforms:
+  #  DEBIAN:
+  - name: debian12
+    image_name: Debian 12 64-bit
+    groups: ['ssh']
+provisioner:
+  name: ansible
+  playbooks:
+    create: ../default/create-os.yml
+    prepare: ../default-install/converge.yml
+    destroy: ../default/destroy-os.yml
+    converge: ../default-uninstall/converge.yml
+    verify: ../default-uninstall/verify.yml
+verifier:
+  name: ansible

@@ -10,6 +10,9 @@ permissions:
 jobs:
   mirror-image:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Compute image names
@@ -17,7 +20,7 @@ jobs:
         shell: bash
         run: |
           echo "source_image=docker.io/library/hello-world:latest" >> "$GITHUB_OUTPUT"
-          echo "target_image=ghcr.io/${GITHUB_REPOSITORY,,}/hello-world:latest" >> "$GITHUB_OUTPUT"
+          echo "target_image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/hello-world:latest" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GHCR
         uses: docker/login-action@v3

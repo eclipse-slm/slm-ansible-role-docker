@@ -1,7 +1,7 @@
 ---
 - name: Set yum packages
   ansible.builtin.set_fact:
-    yum_pacakges:
+    yum_packages:
       - docker-ce
       - docker-ce-cli
       - containerd.io

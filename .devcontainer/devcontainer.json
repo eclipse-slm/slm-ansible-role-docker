@@ -12,6 +12,9 @@
 		"--volume=/var/run/docker.sock:/var/run/docker.sock"
 	],
 	"updateRemoteUserUID": true,
+	"mounts": [
+		"source=${localEnv:USERPROFILE}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached"
+	],
 	"customizations": {
 		"vscode": {
 			"extensions": [

@@ -6,7 +6,7 @@
       - curl
       - gnupg
     state: present
-    update_cache: yes
+    update_cache: true
   register: prereq_apt_result
   until: not prereq_apt_result.failed
   retries: 20
@@ -48,9 +48,22 @@
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
+      - python3-pip
     state: present
-    update_cache: yes
+    update_cache: true
   register: docker_apt_result
   until: not docker_apt_result.failed
   retries: 20
   delay: 3
+
+- name: Install pip packages (Debian < 12)
+  when: ansible_facts['distribution_major_version'] | int < 12
+  ansible.builtin.pip:
+    name: "packaging"
+
+- name: Install pip packages (Debian >= 12)
+  when: ansible_facts['distribution_major_version'] | int >= 12
+  ansible.builtin.apt:
+    name: "python3-packaging"
+    state: present
+    update_cache: true

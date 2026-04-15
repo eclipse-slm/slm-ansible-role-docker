@@ -63,11 +63,5 @@ curl -X 'POST' \
   "https://${AG_HOST}/api/v1/imports/" \
   -H 'accept: application/json' \
   -H "Authorization: Token ${AG_TOKEN}" \
-  --data-raw '{"alternate_namespace_name":"eclipse_slm","alternate_role_name":"docker","github_reference":"main","github_repo":"slm-ansible-role-docker","github_user":"ipa-big", "alternate_clone_url": "https://github.com/eclipse-slm/slm-ansible-role-docker"}'
+  --data-raw '{"alternate_namespace_name":"eclipse_slm","alternate_role_name":"docker","github_reference":"main","github_repo":"slm-ansible-role-docker","github_user":"eclipse-slm", "alternate_clone_url": "https://github.com/eclipse-slm/slm-ansible-role-docker"}'
 ```
-
-curl -v -X POST \
-    -H 'Authorization: token YOURAPITOKEN' \
-    -H 'Content-Type: application/json' \
-    -d '{"github_user": "nahsi", "github_repo": "ansible-base-ubuntu", "alternate_clone_url": "https://github.com/nahsilabs/ansible-base-ubuntu" }' \
-    https://galaxy.ansible.com/api/v1/imports/

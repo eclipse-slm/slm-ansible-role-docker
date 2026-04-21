@@ -5,7 +5,7 @@ driver:
   name: default
 platforms:
   - name: debian11
-    image_name: Debian 11 64-bit
+    image_name: Debian 11 64-bit (Ansible)
     groups: ['ssh']
 provisioner:
   name: ansible

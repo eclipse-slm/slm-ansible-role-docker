@@ -5,7 +5,7 @@ driver:
   name: default
 platforms:
   - name: ubuntu1804
-    image_name: Ubuntu 18.04 64-bit
+    image_name: Ubuntu 18.04 64-bit (Ansible)
     groups: ['ssh']
 provisioner:
   name: ansible

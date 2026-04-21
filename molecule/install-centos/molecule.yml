@@ -5,11 +5,11 @@ driver:
   name: default
 platforms:
   - name: centos7
-    image_name: CentOS 7 64-bit
+    image_name: CentOS 7 64-bit (Ansible)
     groups: ['ssh']
 
   - name: centos8
-    image_name: CentOS 8 64-bit
+    image_name: CentOS 8 64-bit (Ansible)
     groups: ['ssh']
 
   - name: centos9

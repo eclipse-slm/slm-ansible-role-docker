@@ -1,26 +1,17 @@
 ---
-- name: Converge - Prepare (ssh)
-  hosts: all
-  gather_facts: no
-  become: yes
-  vars:
-    state: prepare
-  roles:
-    - "../../../docker"
-
 - name: Converge - Uninstall (ssh)
   hosts: ssh
-  gather_facts: yes
-  become: yes
+  gather_facts: true
+  become: true
   vars:
     state: absent
   roles:
-    - "../../../docker"
+    - "../../.."
 
 - name: Converge - Uninstall (winrm/win-ssh)
   hosts: winrm:win-ssh
-  gather_facts: no
-  become: yes
+  gather_facts: false
+  become: true
   vars:
     state: absent
   tasks:
@@ -34,4 +25,4 @@
 
     - name: "Include docker - state = present"
       ansible.builtin.include_role:
-        name: "../../../docker"
+        name: "../../.."

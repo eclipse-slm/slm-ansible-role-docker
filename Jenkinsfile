@@ -1,51 +1,22 @@
-def scenarios = [
-    "ubuntu2404": [
-        "install",
-        "uninstall"
-    ],
-   "ubuntu2204": [
-       "install",
-       "uninstall"
-   ],
-   "ubuntu2004": [
-       "install",
-       "uninstall"
-   ],
-   "ubuntu1804": [
-       "install",
-       "uninstall"
-   ],
-   "centos10": [
-        "install",
-        "uninstall"
-   ],
-   "centos9": [
-        "install",
-        "uninstall"
-   ],
-   "centos8": [
-       "install",
-       "uninstall"
-   ],
-   "centos7": [
-       "install",
-       "uninstall"
-   ],
-     "debian13": [
-         "install",
-         "uninstall"
-     ],
-     "debian12": [
-         "install",
-         "uninstall"
-     ],
-     "debian11": [
-         "install",
-         "uninstall"
-     ]
+def default_scenarios = [
+    "install",
+    "uninstall"
 ]
 
-def role = "docker"
+def scenarios = [
+    "ubuntu2404":   default_scenarios,
+    "ubuntu2204":   default_scenarios,
+    "ubuntu2004":   default_scenarios,
+    "ubuntu1804":   default_scenarios,
+    "centos10":     default_scenarios,
+    "centos9":      default_scenarios,
+    "centos8":      default_scenarios,
+    "centos7":      default_scenarios,
+    "debian13":     default_scenarios,
+    "debian12":     default_scenarios,
+    "debian11":     default_scenarios
+]
+
 def verbose = "-vv"
 
 parallel_stages = [:]
@@ -64,12 +35,12 @@ for (kv in mapToList(scenarios)) {
                     def scenario = scenarioList[i]
 
                     stage("${platform} - ${scenario}") {
-                        sh "cd ./${role} && molecule ${verbose} test -s ${scenario}-${platform} --destroy never --report"
+                        sh "molecule ${verbose} test -s ${scenario}-${platform} --destroy never --report"
                     }
                 }
             } finally {                
                 stage("Destroy") {
-                    sh "cd ./${role} && molecule destroy -s ${scenarioList[0]}-${platform} --report"
+                    sh "molecule destroy -s ${scenarioList[0]}-${platform} --report"
                 }
             }
         }

@@ -17,5 +17,5 @@
     enabled: true
 
 - name: Install 'PyYAML' pip package (CentOS 7)
-  ansible.builtin.command: /usr/local/bin/python3.11 -m pip install PyYAML==6.0.3 requests==2.33.1
+  ansible.builtin.command: "{{ ansible_facts['discovered_interpreter_python'] }} -m pip install PyYAML==6.0.3 requests==2.33.1"
   changed_when: false

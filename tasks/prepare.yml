@@ -22,7 +22,7 @@
       ansible.builtin.set_fact:
         python_version: "{{ (python_version_text | regex_search('([0-9]+\\.[0-9]+\\.[0-9]+)', '\\1')) | default('unknown') }}"
 
-    - debug:
+    - ansible.builtin.debug:
         msg: "Detected Python version: {{ python_version }}"
 
 - name: Get Distribution ID
@@ -34,7 +34,7 @@
       changed_when: false
 
     - name: Debug distribution id
-      debug:
+      ansible.builtin.debug:
         var: distro_id.stdout | default('') | trim
 
 - name: Prepare (Debian)
@@ -50,7 +50,7 @@
       ansible.builtin.set_fact:
         debian_major_version: "{{ (debian_version_id_raw.stdout | default('') | trim | regex_search('^([0-9]+)', '\\1'))[0] | default('unknown') }}"
 
-    - debug:
+    - ansible.builtin.debug:
         msg: "Detected Debian major version: {{ debian_major_version }}"
 
     - name: Prepare Debian 11
@@ -70,7 +70,7 @@
       ansible.builtin.set_fact:
         ubuntu_major_version: "{{ (ubuntu_version_id_raw.stdout | default('') | trim | regex_search('^([0-9]+)', '\\1'))[0] | default('unknown') }}"
 
-    - debug:
+    - ansible.builtin.debug:
         msg: "Detected Ubuntu major version: {{ ubuntu_major_version }}"
 
     - name: Update Python (Ubuntu 18)

@@ -13,7 +13,8 @@
 	],
 	"updateRemoteUserUID": true,
 	"mounts": [
-		"source=${localEnv:USERPROFILE}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached"
+		"source=${localEnv:USERPROFILE}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached",
+		"source=${localEnv:USERPROFILE}/.kube/config,target=/root/.kube/config,type=bind,consistency=cached"
 	],
 	"customizations": {
 		"vscode": {

@@ -29,11 +29,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pull image from Docker Hub
-        run: docker pull "${{ steps.vars.outputs.source_image }}"
-
-      - name: Tag image for GHCR
-        run: docker tag "${{ steps.vars.outputs.source_image }}" "${{ steps.vars.outputs.target_image }}"
-
-      - name: Push image to GHCR
-        run: docker push "${{ steps.vars.outputs.target_image }}"
+      - name: Mirror multi-arch image to GHCR
+        run: |
+          docker buildx imagetools create \
+            --tag "${{ steps.vars.outputs.target_image }}" \
+            "${{ steps.vars.outputs.source_image }}"

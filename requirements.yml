@@ -3,6 +3,11 @@ roles:
   - name: ipa-big.molecule_openstack
     version: 1.0.10
 
+  - src: "git+https://github.com/ipa-big/molecule_kubevirt"
+    scm: git
+    version: main
+    name: ipa-big.molecule_kubevirt
+
   - src: "git+https://github.com/eclipse-slm/slm-ansible-role-python"
     scm: git
     version: main

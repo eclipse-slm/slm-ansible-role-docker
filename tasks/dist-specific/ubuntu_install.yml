@@ -19,25 +19,39 @@
   register: apt_result
   changed_when: false
 
-- name: Add Docker’s official GPG key
-  ansible.builtin.apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
-  register: apt_key_result
-  until: not apt_key_result.failed
-  retries: 20
 
-- name: Set up the stable repository (version > 20)
+- name: Add Docker’s official repo and GPG key (version > 20)   
   when: ansible_facts["distribution_major_version"] | int > 20
-  ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_facts['distribution_release'] }} stable"
-    state: present
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: deb
+    uris: "https://download.docker.com/linux/ubuntu"
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    components: stable
+    architectures: amd64
+    signed_by: https://download.docker.com/linux/ubuntu/gpg
 
-- name: Set up the stable repository (version <= 20)
+- name: Add Docker’s official repo and GPG key (version <= 20)
   when: ansible_facts["distribution_major_version"] | int <= 20
-  ansible.builtin.shell: |
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  changed_when: false
+  block:
+    - name: Ensure the keyrings directory exists (version <= 20)
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Download Docker GPG key and set read permissions (version <= 20)
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+
+    - name: Add Docker APT repository directly to sources list (version <= 20)
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/docker.list
+        content: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_facts['distribution_release'] }} stable\n"
+        mode: '0644'
+      become: true
 
 - name: Install docker engine (version > 20)
   when: ansible_facts["distribution_major_version"] | int > 20

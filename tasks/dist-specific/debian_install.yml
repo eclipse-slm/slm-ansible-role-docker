@@ -12,18 +12,6 @@
   retries: 20
   delay: 3
 
-- name: Ensure apt keyrings directory exists
-  ansible.builtin.file:
-    path: /etc/apt/keyrings
-    state: directory
-    mode: '0755'
-
-- name: Add Docker official GPG key
-  ansible.builtin.get_url:
-    url: https://download.docker.com/linux/debian/gpg
-    dest: /etc/apt/keyrings/docker.asc
-    mode: '0644'
-
 - name: Set architecture for Docker apt repository
   ansible.builtin.set_fact:
     docker_debian_arch: >-
@@ -33,12 +21,18 @@
           'aarch64': 'arm64',
           'armv7l': 'armhf'
         }.get(ansible_facts['architecture'], ansible_facts['architecture'])
-      }}
+      }}     
 
-- name: Add Docker apt repository
-  ansible.builtin.apt_repository:
-    repo: "deb [arch={{ docker_debian_arch }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian {{ ansible_facts['distribution_release'] }} stable"
-    state: present
+
+- name: Add Docker’s official repo and GPG key
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: deb
+    uris: "https://download.docker.com/linux/debian"
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    components: stable
+    architectures: "{{ docker_debian_arch }}"
+    signed_by: https://download.docker.com/linux/debian/gpg
 
 - name: Install Docker packages
   ansible.builtin.apt:
